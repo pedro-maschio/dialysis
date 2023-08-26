@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.pedro.solutions.dialysisnotes"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.pedro.solutions.dialysisnotes"
@@ -42,7 +42,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.2"
     }
     kotlinOptions {
-        jvmTarget = "18"
+        jvmTarget = "1.8"
     }
     packaging {
         resources {
@@ -102,4 +102,8 @@ dependencies {
     // Saved state module for ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    // Compose navigation
+    val navVersion = "2.7.1"
+
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 }

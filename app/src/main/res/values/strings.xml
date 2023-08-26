@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Dialysis Notes</string>
+    <string name="create_new_dialysis">Create new dialysis</string>
 </resources>
