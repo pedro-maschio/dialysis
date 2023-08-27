@@ -2,12 +2,13 @@ package com.pedro.solutions.dialysisnotes
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -24,15 +25,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 import com.pedro.solutions.dialysisnotes.viewmodels.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.views.CreateDialysis
+import com.pedro.solutions.dialysisnotes.views.DialysisItemView
 
 class MainActivity : ComponentActivity() {
     private val viewModel: DialysisViewModel by viewModels {
@@ -56,7 +58,14 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationConstants.MAIN_SCREEN
                     ) {
                         composable(NavigationConstants.MAIN_SCREEN) { MainScreen(navController) }
-                        composable(NavigationConstants.CREATE_DIALYSIS) { CreateDialysis() }
+                        composable(NavigationConstants.CREATE_EDIT_DIALYSIS + "/{userId}",
+                            arguments = listOf(navArgument("userId") { defaultValue = "-1" })) {
+                            viewModel.setCurrentDialysis(it.arguments?.getInt("userId") ?: -1)
+                            CreateDialysis(
+                                viewModel,
+                                navController
+                            )
+                        }
                     }
                 }
             }
@@ -69,25 +78,32 @@ class MainActivity : ComponentActivity() {
     fun MainScreen(navController: NavController) {
         Scaffold(topBar = {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
-        }, floatingActionButton = { FloatingButton(navController) }, content = {
-            MainAppList()
+        }, floatingActionButton = { FloatingButton(navController) }, content = { innerPadding ->
+            MainAppList(innerPadding, navController)
         }, modifier = Modifier.fillMaxSize())
     }
 
     @Composable
     fun FloatingButton(navController: NavController) {
-        FloatingActionButton(onClick = { navController.navigate(NavigationConstants.CREATE_DIALYSIS) }) {
+        FloatingActionButton(onClick = { navController.navigate(NavigationConstants.CREATE_EDIT_DIALYSIS + "/-1") }) {
             Icon(Icons.Filled.Add, getString(R.string.create_new_dialysis))
         }
     }
 
     @Composable
-    fun MainAppList() {
+    fun MainAppList(innerpadding: PaddingValues, navController: NavController) {
         val dialysisItems by viewModel.dialysisList.observeAsState(initial = listOf())
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerpadding), userScrollEnabled = true
+        ) {
             items(dialysisItems) { item ->
-                Row {
-                    Text(text = item.notes, modifier = Modifier.width(50.dp))
+                DialysisItemView(dialysis = item) {
+                    Log.d("PEDRO123", "item.id=${item.id}")
+                    navController.navigate(
+                        NavigationConstants.CREATE_EDIT_DIALYSIS + "/${item.id}"
+                    )
                 }
             }
         }
