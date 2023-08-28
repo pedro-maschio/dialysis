@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -58,12 +59,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationConstants.MAIN_SCREEN
                     ) {
                         composable(NavigationConstants.MAIN_SCREEN) { MainScreen(navController) }
-                        composable(NavigationConstants.CREATE_EDIT_DIALYSIS + "/{userId}",
-                            arguments = listOf(navArgument("userId") { defaultValue = "-1" })) {
+                        composable(
+                            NavigationConstants.CREATE_EDIT_DIALYSIS + "/{userId}",
+                            arguments = listOf(navArgument("userId") {
+                                type = NavType.IntType
+                                defaultValue = -1
+                            })
+                        ) {
                             viewModel.setCurrentDialysis(it.arguments?.getInt("userId") ?: -1)
                             CreateDialysis(
-                                viewModel,
-                                navController
+                                viewModel, navController
                             )
                         }
                     }

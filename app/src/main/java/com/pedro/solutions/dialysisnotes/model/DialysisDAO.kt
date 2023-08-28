@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Dao
 interface DialysisDAO {
@@ -14,7 +15,7 @@ interface DialysisDAO {
     fun getAllDialysis(): Flow<List<Dialysis>>
 
     @Query("SELECT * FROM Dialysis WHERE id = :id")
-    fun findDialysisById(id: Int?): Flow<Dialysis?>?
+    suspend fun findDialysisById(id: Int?): Dialysis?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDialysis(dialysis: Dialysis)
