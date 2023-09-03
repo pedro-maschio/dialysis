@@ -58,7 +58,6 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = NavigationConstants.MAIN_SCREEN
                     ) {
-                        composable(NavigationConstants.MAIN_SCREEN) { MainScreen(navController) }
                         composable(
                             NavigationConstants.CREATE_EDIT_DIALYSIS + "/{userId}",
                             arguments = listOf(navArgument("userId") {
@@ -66,11 +65,14 @@ class MainActivity : ComponentActivity() {
                                 defaultValue = -1
                             })
                         ) {
-                            viewModel.setCurrentDialysis(it.arguments?.getInt("userId") ?: -1)
+                            val id = it.arguments?.getInt("userId")
+                            viewModel.loadDialysisItem(id)
                             CreateDialysis(
                                 viewModel, navController
                             )
                         }
+                        composable(NavigationConstants.MAIN_SCREEN) { MainScreen(navController) }
+
                     }
                 }
             }
@@ -105,7 +107,6 @@ class MainActivity : ComponentActivity() {
         ) {
             items(dialysisItems) { item ->
                 DialysisItemView(dialysis = item) {
-                    Log.d("PEDRO123", "item.id=${item.id}")
                     navController.navigate(
                         NavigationConstants.CREATE_EDIT_DIALYSIS + "/${item.id}"
                     )

@@ -1,10 +1,5 @@
 package com.pedro.solutions.dialysisnotes.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -13,79 +8,100 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.pedro.solutions.dialysisnotes.CreateEditDialysisState
 import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.model.Dialysis
 import com.pedro.solutions.dialysisnotes.model.DialysisDAO
 import com.pedro.solutions.dialysisnotes.views.AddEditDialysisEvent
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DialysisViewModel(
     private val dao: DialysisDAO, private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val dialysisList: LiveData<List<Dialysis>> = dao.getAllDialysis().asLiveData()
-    private val dialysisId: Int? = savedStateHandle["userId"]
 
+    private val _uiState = MutableStateFlow(CreateEditDialysisState())
+    val uiState: StateFlow<CreateEditDialysisState> = _uiState.asStateFlow()
 
+    init {
+        resetState()
+    }
 
-    var dialysis by mutableStateOf<Dialysis?>(null)
-        private set
+    private fun resetState() {
+        _uiState.update { CreateEditDialysisState(System.currentTimeMillis()) }
+    }
 
-    var initialUF by mutableIntStateOf(-1)
-        private set
-    var finalUF by mutableIntStateOf(-1)
-        private set
-
-    var observation by mutableStateOf("")
-        private set
-
-    fun setCurrentDialysis(id: Int) {
-        if (id != -1) {
-            viewModelScope.launch {
-                dao.findDialysisById(id)?.let { dialysis ->
-                    initialUF = dialysis.initialUf
-                    finalUF = dialysis.finalUf
-                    observation = dialysis.notes
-                    this@DialysisViewModel.dialysis = dialysis
+    fun loadDialysisItem(id: Int?) {
+        id?.let {
+            if (id > -1) {
+                viewModelScope.launch {
+                    val d = dao.findDialysisById(id)
+                    d?.let {
+                        _uiState.update {
+                            CreateEditDialysisState(
+                                d.createdAt,
+                                d.initialUf.toString(),
+                                d.finalUf.toString(),
+                                d.notes,
+                                true,
+                                id
+                            )
+                        }
+                    }
                 }
+            } else {
+                resetState()
             }
-        } else {
-            initialUF = 0
-            finalUF = 0
-            observation = ""
         }
     }
 
-    fun addDialysis(dialysis: Dialysis) {
+    private fun saveDialysis(isEditing: Boolean) {
         viewModelScope.launch {
-            dao.insertDialysis(dialysis)
+            val d = Dialysis(
+                _uiState.value.createdAt,
+                System.currentTimeMillis(),
+                _uiState.value.initialUF.toInt(),
+                _uiState.value.finalUF.toInt(),
+                _uiState.value.observations,
+                _uiState.value.id
+            )
+            if (isEditing) dao.updateDialysis(d)
+            else dao.insertDialysis(d)
         }
     }
 
     fun onEvent(event: AddEditDialysisEvent) {
         when (event) {
             is AddEditDialysisEvent.OnDialysisInitialUFChange -> {
-                initialUF = event.initialUF
+                _uiState.update { currentState -> currentState.copy(initialUF = event.initialUF) }
             }
+
             is AddEditDialysisEvent.OnDialysisFinalUFChange -> {
-                finalUF = event.finalUF
+                _uiState.update { currentState -> currentState.copy(finalUF = event.finalUF) }
             }
+
             is AddEditDialysisEvent.OnDialysisObservationChange -> {
-                observation = event.observation
+                _uiState.update { currentState -> currentState.copy(observations = event.observation) }
             }
-            else -> {}
+
+            is AddEditDialysisEvent.OnDialysisSaved -> {
+                saveDialysis(event.isEditing)
+            }
+            is AddEditDialysisEvent.OnDialysisDeleted -> {
+                deleteDialysis(event.id)
+            }
         }
     }
 
-    fun updateDialysis(dialysis: Dialysis) {
-        viewModelScope.launch {
-            dao.updateDialysis(dialysis)
-        }
-    }
-
-    fun deleteDialysis(dialysis: Dialysis) {
-        viewModelScope.launch {
-            dao.deleteDialysis(dialysis)
+    private fun deleteDialysis(id: Int?) {
+        id?.let {
+            viewModelScope.launch {
+                dao.deleteDialysis(id)
+            }
         }
     }
 

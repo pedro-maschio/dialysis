@@ -15,7 +15,7 @@ interface DialysisDAO {
     fun getAllDialysis(): Flow<List<Dialysis>>
 
     @Query("SELECT * FROM Dialysis WHERE id = :id")
-    suspend fun findDialysisById(id: Int?): Dialysis?
+    suspend fun findDialysisById(id: Int): Dialysis?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDialysis(dialysis: Dialysis)
@@ -23,6 +23,6 @@ interface DialysisDAO {
     @Update
     suspend fun updateDialysis(dialysis: Dialysis)
 
-    @Delete
-    suspend fun deleteDialysis(dialysis: Dialysis)
+    @Query("DELETE FROM Dialysis WHERE id = :id")
+    suspend fun deleteDialysis(id: Int)
 }
