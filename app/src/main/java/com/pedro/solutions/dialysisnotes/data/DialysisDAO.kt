@@ -1,13 +1,12 @@
-package com.pedro.solutions.dialysisnotes.model
+package com.pedro.solutions.dialysisnotes.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.pedro.solutions.dialysisnotes.data.Dialysis
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Dao
 interface DialysisDAO {

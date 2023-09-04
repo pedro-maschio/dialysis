@@ -2,7 +2,6 @@ package com.pedro.solutions.dialysisnotes
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -33,9 +32,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
-import com.pedro.solutions.dialysisnotes.viewmodels.DialysisViewModel
-import com.pedro.solutions.dialysisnotes.views.CreateDialysis
-import com.pedro.solutions.dialysisnotes.views.DialysisItemView
+import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
+import com.pedro.solutions.dialysisnotes.ui.add_edit.CreateDialysis
+import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisItem
+import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
 
 class MainActivity : ComponentActivity() {
     private val viewModel: DialysisViewModel by viewModels {
@@ -49,7 +49,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             DialysisNotesTheme {
                 val navController = rememberNavController()
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
@@ -86,7 +85,7 @@ class MainActivity : ComponentActivity() {
         Scaffold(topBar = {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
         }, floatingActionButton = { FloatingButton(navController) }, content = { innerPadding ->
-            MainAppList(innerPadding, navController)
+            DialysisList(viewModel, innerPadding, navController)
         }, modifier = Modifier.fillMaxSize())
     }
 
@@ -97,22 +96,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun MainAppList(innerpadding: PaddingValues, navController: NavController) {
-        val dialysisItems by viewModel.dialysisList.observeAsState(initial = listOf())
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerpadding), userScrollEnabled = true
-        ) {
-            items(dialysisItems) { item ->
-                DialysisItemView(dialysis = item) {
-                    navController.navigate(
-                        NavigationConstants.CREATE_EDIT_DIALYSIS + "/${item.id}"
-                    )
-                }
-            }
-        }
-    }
+
 }
 

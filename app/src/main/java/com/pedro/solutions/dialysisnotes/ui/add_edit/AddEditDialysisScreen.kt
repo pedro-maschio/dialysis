@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.views
+package com.pedro.solutions.dialysisnotes.ui.add_edit
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +18,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
-import com.pedro.solutions.dialysisnotes.viewmodels.DialysisViewModel
+import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +32,7 @@ import com.pedro.solutions.dialysisnotes.viewmodels.DialysisViewModel
 fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
     val dialysisState by viewModel.uiState.collectAsState()
 
-    CommonScaffold(screenTitle = "Create new dialysis") { innerpadding ->
+    CommonScaffold(screenTitle = stringResource(id = R.string.create_new_dialysis)) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
@@ -45,9 +47,9 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                     onValueChange = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisInitialUFChange(it))
                     },
-                    label = { Text(text = "Initial UF") },
+                    label = { Text(text = stringResource(R.string.uf_inicial)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(0.9F)
+                    modifier = Modifier.fillMaxWidth(0.9F), isError = dialysisState.initialUFInvalid
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -63,9 +65,9 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                             )
                         )
                     },
-                    label = { Text(text = "Final UF") },
+                    label = { Text(text = stringResource(id = R.string.uf_final)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(0.9F)
+                    modifier = Modifier.fillMaxWidth(0.9F), isError = dialysisState.finalUFInvalid
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -81,7 +83,7 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                             )
                         )
                     },
-                    label = { Text(text = "Observations") },
+                    label = { Text(text = stringResource(id = R.string.observations)) },
                     modifier = Modifier
                         .height(170.dp)
                         .fillMaxWidth(0.9F),
@@ -93,15 +95,15 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                 Button(onClick = {
                     viewModel.onEvent(AddEditDialysisEvent.OnDialysisSaved(dialysisState.isEditing))
                     navController.navigate(NavigationConstants.MAIN_SCREEN)
-                }) {
-                    Text(text = "Save")
+                }, enabled = !dialysisState.initialUFInvalid && !dialysisState.finalUFInvalid) {
+                    Text(text = stringResource(id = R.string.salvar))
                 }
                 if (dialysisState.isEditing) {
                     Button(onClick = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisDeleted(dialysisState.id))
                         navController.navigate(NavigationConstants.MAIN_SCREEN)
                     }, modifier = Modifier.padding(5.dp, 0.dp)) {
-                        Text(text = "Delete")
+                        Text(text = stringResource(id = R.string.apagar))
                     }
                 }
             }

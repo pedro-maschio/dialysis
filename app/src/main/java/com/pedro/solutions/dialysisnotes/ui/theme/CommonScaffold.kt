@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.views
+package com.pedro.solutions.dialysisnotes.ui.theme
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues

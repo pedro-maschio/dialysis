@@ -1,11 +1,9 @@
-package com.pedro.solutions.dialysisnotes.database
+package com.pedro.solutions.dialysisnotes.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.pedro.solutions.dialysisnotes.model.Dialysis
-import com.pedro.solutions.dialysisnotes.model.DialysisDAO
 
 @Database(entities = [Dialysis::class], version = 1)
 abstract class DialysisDatabase : RoomDatabase() {

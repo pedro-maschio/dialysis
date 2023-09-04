@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Dialysis Notes</string>
-    <string name="create_new_dialysis">Create new dialysis</string>
+    <string name="create_new_dialysis">Criar nova diálise</string>
+    <string name="uf_inicial">UF inicial</string>
+    <string name="uf_final">UF final</string>
+    <string name="observations">Observações</string>
+    <string name="salvar">Salvar</string>
+    <string name="apagar">Apagar</string>
+    <string name="criado_as">Criado %s</string>
+    <string name="atualizado">Atualizado %s</string>
 </resources>
