@@ -8,5 +8,6 @@ data class AddEditDialysisState(
     val isEditing: Boolean = false,
     val id: Int? = null,
     val initialUFInvalid: Boolean = false,
-    val finalUFInvalid: Boolean = false
+    val finalUFInvalid: Boolean = false,
+    val observationsInvalid: Boolean = false,
 )

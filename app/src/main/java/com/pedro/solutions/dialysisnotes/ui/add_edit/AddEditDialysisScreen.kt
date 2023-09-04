@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -31,13 +33,15 @@ import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 @Composable
 fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
     val dialysisState by viewModel.uiState.collectAsState()
+    val scrollState = rememberScrollState()
 
     CommonScaffold(screenTitle = stringResource(id = R.string.create_new_dialysis)) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
@@ -49,7 +53,9 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                     },
                     label = { Text(text = stringResource(R.string.uf_inicial)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(0.9F), isError = dialysisState.initialUFInvalid
+                    modifier = Modifier.fillMaxWidth(0.9F),
+                    singleLine = true,
+                    isError = dialysisState.initialUFInvalid
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -67,7 +73,9 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                     },
                     label = { Text(text = stringResource(id = R.string.uf_final)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(0.9F), isError = dialysisState.finalUFInvalid
+                    modifier = Modifier.fillMaxWidth(0.9F),
+                    isError = dialysisState.finalUFInvalid,
+                    singleLine = true
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -88,14 +96,18 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                         .height(170.dp)
                         .fillMaxWidth(0.9F),
                     maxLines = 15,
+                    isError = dialysisState.observationsInvalid
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row {
-                Button(onClick = {
-                    viewModel.onEvent(AddEditDialysisEvent.OnDialysisSaved(dialysisState.isEditing))
-                    navController.navigate(NavigationConstants.MAIN_SCREEN)
-                }, enabled = !dialysisState.initialUFInvalid && !dialysisState.finalUFInvalid) {
+                Button(
+                    onClick = {
+                        viewModel.onEvent(AddEditDialysisEvent.OnDialysisSaved(dialysisState.isEditing))
+                        navController.navigate(NavigationConstants.MAIN_SCREEN)
+                    },
+                    enabled = !dialysisState.initialUFInvalid && !dialysisState.finalUFInvalid && !dialysisState.observationsInvalid
+                ) {
                     Text(text = stringResource(id = R.string.salvar))
                 }
                 if (dialysisState.isEditing) {

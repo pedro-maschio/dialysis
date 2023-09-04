@@ -57,7 +57,6 @@ class DialysisViewModel(
             }
         }
     }
-
     private fun saveDialysis(isEditing: Boolean) {
         viewModelScope.launch {
             val d = Dialysis(
@@ -73,6 +72,8 @@ class DialysisViewModel(
         }
     }
 
+    /* TODO: how to create a composable data class value (isSaveButtonEnabled)? It needs to depends on another invalida attributes
+    */
     fun onEvent(event: AddEditDialysisEvent) {
         when (event) {
             is AddEditDialysisEvent.OnDialysisInitialUFChange -> {
@@ -87,15 +88,19 @@ class DialysisViewModel(
             is AddEditDialysisEvent.OnDialysisFinalUFChange -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        finalUF = event.finalUF,
-                        finalUFInvalid = !Utils.isStringInt(event.finalUF)
+                        finalUF = event.finalUF, finalUFInvalid = !Utils.isStringInt(event.finalUF)
                     )
                 }
 
             }
 
             is AddEditDialysisEvent.OnDialysisObservationChange -> {
-                _uiState.update { currentState -> currentState.copy(observations = event.observation) }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        observations = event.observation,
+                        observationsInvalid = event.observation.length > Utils.MAX_OBSERVATIONS_CHARACTERS_SIZE
+                    )
+                }
             }
 
             is AddEditDialysisEvent.OnDialysisSaved -> {
