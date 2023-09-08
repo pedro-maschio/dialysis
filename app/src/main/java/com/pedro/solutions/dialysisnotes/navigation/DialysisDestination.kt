@@ -12,5 +12,7 @@ sealed class DialysisDestination(
     data object AddEditDialysis :
         DialysisDestination("addEditDialysis", R.string.create_new_dialysis)
 
-    data object PDFList : DialysisDestination("pdfList", R.string.pdfs_gerados)
+    data object PDFList : DialysisDestination("pdfList", R.string.generated_pdfs)
+
+    data object AddEditPDF : DialysisDestination("addEditPDF", R.string.add_edit_pdf)
 }

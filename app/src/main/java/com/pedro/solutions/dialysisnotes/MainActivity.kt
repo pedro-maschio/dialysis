@@ -2,9 +2,11 @@ package com.pedro.solutions.dialysisnotes
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -36,6 +38,7 @@ import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
 import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
+import com.pedro.solutions.dialysisnotes.ui.pdf_generator.AddEditPDF
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFList
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 
@@ -61,7 +64,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainScreen() {
@@ -75,9 +77,23 @@ class MainActivity : ComponentActivity() {
             )
         )
 
+        val onClickFloatingButton: (destination: DialysisDestination) -> Unit = {
+            when (it) {
+                is DialysisDestination.AddEditDialysis -> navController.navigate(DialysisDestination.AddEditDialysis.route + "/-1")
+                is DialysisDestination.AddEditPDF -> navController.navigate(DialysisDestination.AddEditPDF.route + "/-1")
+                else -> navController.navigate(DialysisDestination.AddEditDialysis.route + "/-1")
+
+            }
+        }
+
         Scaffold(topBar = {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
-        }, floatingActionButton = { FloatingButton(navController) }, bottomBar = {
+        }, floatingActionButton = {
+            FloatingButton(
+                navController = navController,
+                onClick = onClickFloatingButton
+            )
+        }, bottomBar = {
             BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -90,10 +106,12 @@ class MainActivity : ComponentActivity() {
                         // TODO: find out why this icon it is not showing
                         icon = {
                             bottomNavigationIcons[index]
-                        }, label = { Text(text = stringResource(screen.resourceId))})
+                        },
+                        label = { Text(text = stringResource(screen.resourceId)) })
                 }
             }
-        }, modifier = Modifier.fillMaxSize()) { innerPadding ->
+        }, modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
             NavHost(
                 navController = navController,
                 startDestination = DialysisDestination.MainScreen.route
@@ -119,14 +137,34 @@ class MainActivity : ComponentActivity() {
                 composable(DialysisDestination.PDFList.route) {
                     PDFList()
                 }
+                composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
+                    AddEditPDF()
+                }
             }
         }
     }
 
     @Composable
-    fun FloatingButton(navController: NavController) {
-        FloatingActionButton(onClick = { navController.navigate(DialysisDestination.AddEditDialysis.route + "/-1") }) {
-            Icon(Icons.Filled.Add, getString(R.string.create_new_dialysis))
+    fun FloatingButton(navController: NavController, onClick: (DialysisDestination) -> Unit) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination?.route
+        val onClickDestination = when (currentDestination) {
+            DialysisDestination.MainScreen.route -> DialysisDestination.AddEditDialysis
+            DialysisDestination.PDFList.route -> DialysisDestination.AddEditPDF
+            else -> DialysisDestination.AddEditDialysis
+        }
+
+        val visibleDestinations =
+            listOf(DialysisDestination.MainScreen.route, DialysisDestination.PDFList.route)
+        /* TODO: this is not working fine, it is a known issue when a floating button
+            is set visible=false and then visible=true
+            https://issuetracker.google.com/issues/224005027
+            https://issuetracker.google.com/issues/236018302
+         */
+        AnimatedVisibility(visible = visibleDestinations.contains(currentDestination)) {
+            FloatingActionButton(onClick = { onClick(onClickDestination) }) {
+                Icon(Icons.Filled.Add, getString(R.string.create_new_dialysis))
+            }
         }
     }
 }
