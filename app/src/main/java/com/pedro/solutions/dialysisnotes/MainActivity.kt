@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.BottomNavigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,20 +18,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.pedro.solutions.dialysisnotes.navigation.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
-import com.pedro.solutions.dialysisnotes.navigation.MainScreen
-import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
-import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
+import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
+import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: DialysisViewModel by viewModels {
@@ -50,10 +51,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = MainScreen.route
+                        startDestination = DialysisDestination.MainScreen.route
                     ) {
                         composable(
-                            AddEditDialysis.route + "/{userId}",
+                            DialysisDestination.AddEditDialysis.route + "/{userId}",
                             arguments = listOf(navArgument("userId") {
                                 type = NavType.IntType
                                 defaultValue = -1
@@ -62,12 +63,12 @@ class MainActivity : ComponentActivity() {
                             val id = it.arguments?.getInt("userId")
                             viewModel.loadDialysisItem(id)
                             AddEditDialysis(
-                                viewModel, onSaveOrDeleteButtonSelected = { destination ->
+                                viewModel,
+                                onSaveOrDeleteButtonSelected = { destination ->
                                     navController.navigate(destination.route)
-                                }
-                            )
+                                })
                         }
-                        composable(MainScreen.route) { MainScreen(navController) }
+                        composable(DialysisDestination.MainScreen.route) { MainScreen(navController) }
 
                     }
                 }
@@ -82,19 +83,24 @@ class MainActivity : ComponentActivity() {
         Scaffold(topBar = {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
         }, floatingActionButton = { FloatingButton(navController) }, content = { innerPadding ->
-            DialysisList(viewModel, innerPadding, onItemClicked = { destination, itemId ->
-                navController.navigate(destination.route + "/$itemId")
+            DialysisList(viewModel, innerPadding, onItemClicked = { itemId ->
+                navController.navigate(DialysisDestination.AddEditDialysis.route + "/$itemId")
             })
+        }, bottomBar = {
+            BottomNavigation {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+
+
+            }
         }, modifier = Modifier.fillMaxSize())
     }
 
     @Composable
     fun FloatingButton(navController: NavController) {
-        FloatingActionButton(onClick = { navController.navigate(AddEditDialysis.route + "/-1") }) {
+        FloatingActionButton(onClick = { navController.navigate(DialysisDestination.AddEditDialysis.route + "/-1") }) {
             Icon(Icons.Filled.Add, getString(R.string.create_new_dialysis))
         }
     }
-
-
 }
 

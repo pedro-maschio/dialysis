@@ -25,13 +25,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
-import com.pedro.solutions.dialysisnotes.navigation.MainScreen
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEditDialysis(viewModel: DialysisViewModel, onSaveOrDeleteButtonSelected: (DialysisDestination) -> Unit) {
+fun AddEditDialysis(
+    viewModel: DialysisViewModel,
+    onSaveOrDeleteButtonSelected: (DialysisDestination) -> Unit
+) {
     val dialysisState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -104,7 +106,7 @@ fun AddEditDialysis(viewModel: DialysisViewModel, onSaveOrDeleteButtonSelected: 
                 Button(
                     onClick = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisSaved(dialysisState.isEditing))
-                        onSaveOrDeleteButtonSelected(MainScreen)
+                        onSaveOrDeleteButtonSelected(DialysisDestination.MainScreen)
                     },
                     enabled = !dialysisState.initialUFInvalid && !dialysisState.finalUFInvalid && !dialysisState.observationsInvalid
                 ) {
@@ -113,7 +115,7 @@ fun AddEditDialysis(viewModel: DialysisViewModel, onSaveOrDeleteButtonSelected: 
                 if (dialysisState.isEditing) {
                     Button(onClick = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisDeleted(dialysisState.id))
-                        onSaveOrDeleteButtonSelected(MainScreen)
+                        onSaveOrDeleteButtonSelected(DialysisDestination.MainScreen)
                     }, modifier = Modifier.padding(5.dp, 0.dp)) {
                         Text(text = stringResource(id = R.string.apagar))
                     }

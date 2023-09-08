@@ -13,7 +13,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.pedro.solutions.dialysisnotes.navigation.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.ui.Utils
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 
@@ -21,7 +20,7 @@ import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 fun DialysisList(
     viewModel: DialysisViewModel,
     innerpadding: PaddingValues,
-    onItemClicked: (AddEditDialysis, Int?) -> Unit
+    onItemClicked: (Int?) -> Unit
 ) {
     val dialysisItems by viewModel.dialysisList.observeAsState(initial = listOf())
     LazyColumn(
@@ -51,7 +50,7 @@ fun DialysisList(
                     .height(160.dp)
                     .padding(10.dp)
             ) {
-                onItemClicked(AddEditDialysis, item.id)
+                onItemClicked(item.id)
             }
         }
     }
