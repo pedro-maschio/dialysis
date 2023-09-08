@@ -8,4 +8,5 @@
     <string name="apagar">Apagar</string>
     <string name="criado_as">Criado %s</string>
     <string name="atualizado">Atualizado %s</string>
+    <string name="pdfs_gerados">PDFs</string>
 </resources>
