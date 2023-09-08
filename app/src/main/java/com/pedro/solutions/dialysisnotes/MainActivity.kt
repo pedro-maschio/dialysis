@@ -5,11 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,8 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -30,11 +24,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
+import com.pedro.solutions.dialysisnotes.navigation.AddEditDialysis
+import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
+import com.pedro.solutions.dialysisnotes.navigation.MainScreen
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
-import com.pedro.solutions.dialysisnotes.ui.add_edit.CreateDialysis
-import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisItem
+import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
 
 class MainActivity : ComponentActivity() {
@@ -55,10 +50,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = NavigationConstants.MAIN_SCREEN
+                        startDestination = MainScreen.route
                     ) {
                         composable(
-                            NavigationConstants.CREATE_EDIT_DIALYSIS + "/{userId}",
+                            AddEditDialysis.route + "/{userId}",
                             arguments = listOf(navArgument("userId") {
                                 type = NavType.IntType
                                 defaultValue = -1
@@ -66,11 +61,13 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val id = it.arguments?.getInt("userId")
                             viewModel.loadDialysisItem(id)
-                            CreateDialysis(
-                                viewModel, navController
+                            AddEditDialysis(
+                                viewModel, onSaveOrDeleteButtonSelected = { destination ->
+                                    navController.navigate(destination.route)
+                                }
                             )
                         }
-                        composable(NavigationConstants.MAIN_SCREEN) { MainScreen(navController) }
+                        composable(MainScreen.route) { MainScreen(navController) }
 
                     }
                 }
@@ -85,13 +82,15 @@ class MainActivity : ComponentActivity() {
         Scaffold(topBar = {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
         }, floatingActionButton = { FloatingButton(navController) }, content = { innerPadding ->
-            DialysisList(viewModel, innerPadding, navController)
+            DialysisList(viewModel, innerPadding, onItemClicked = { destination, itemId ->
+                navController.navigate(destination.route + "/$itemId")
+            })
         }, modifier = Modifier.fillMaxSize())
     }
 
     @Composable
     fun FloatingButton(navController: NavController) {
-        FloatingActionButton(onClick = { navController.navigate(NavigationConstants.CREATE_EDIT_DIALYSIS + "/-1") }) {
+        FloatingActionButton(onClick = { navController.navigate(AddEditDialysis.route + "/-1") }) {
             Icon(Icons.Filled.Add, getString(R.string.create_new_dialysis))
         }
     }

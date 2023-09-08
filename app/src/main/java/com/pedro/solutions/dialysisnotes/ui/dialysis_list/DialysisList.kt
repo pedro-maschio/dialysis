@@ -10,11 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
+import com.pedro.solutions.dialysisnotes.navigation.AddEditDialysis
+import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 
 @Composable
-fun DialysisList(viewModel: DialysisViewModel, innerpadding: PaddingValues, navController: NavController) {
+fun DialysisList(viewModel: DialysisViewModel, innerpadding: PaddingValues, onItemClicked: (AddEditDialysis, Int?) -> Unit) {
     val dialysisItems by viewModel.dialysisList.observeAsState(initial = listOf())
     LazyColumn(
         modifier = Modifier
@@ -23,9 +24,10 @@ fun DialysisList(viewModel: DialysisViewModel, innerpadding: PaddingValues, navC
     ) {
         items(dialysisItems) { item ->
             DialysisItem(dialysis = item) {
-                navController.navigate(
-                    NavigationConstants.CREATE_EDIT_DIALYSIS + "/${item.id}"
-                )
+                onItemClicked(AddEditDialysis, item.id)
+//                navController.navigate(
+//                    AddEditDialysis.route + "/${item.id}"
+//                )
             }
         }
     }

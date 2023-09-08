@@ -23,15 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.pedro.solutions.dialysisnotes.R
-import com.pedro.solutions.dialysisnotes.navigation.NavigationConstants
+import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
+import com.pedro.solutions.dialysisnotes.navigation.MainScreen
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
+fun AddEditDialysis(viewModel: DialysisViewModel, onSaveOrDeleteButtonSelected: (DialysisDestination) -> Unit) {
     val dialysisState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -104,7 +104,7 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                 Button(
                     onClick = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisSaved(dialysisState.isEditing))
-                        navController.navigate(NavigationConstants.MAIN_SCREEN)
+                        onSaveOrDeleteButtonSelected(MainScreen)
                     },
                     enabled = !dialysisState.initialUFInvalid && !dialysisState.finalUFInvalid && !dialysisState.observationsInvalid
                 ) {
@@ -113,7 +113,7 @@ fun CreateDialysis(viewModel: DialysisViewModel, navController: NavController) {
                 if (dialysisState.isEditing) {
                     Button(onClick = {
                         viewModel.onEvent(AddEditDialysisEvent.OnDialysisDeleted(dialysisState.id))
-                        navController.navigate(NavigationConstants.MAIN_SCREEN)
+                        onSaveOrDeleteButtonSelected(MainScreen)
                     }, modifier = Modifier.padding(5.dp, 0.dp)) {
                         Text(text = stringResource(id = R.string.apagar))
                     }
