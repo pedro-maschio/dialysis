@@ -1,6 +1,5 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf_generator
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,9 +20,9 @@ class PDFViewModel(
     private val pdfDao: pdfDao,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(AddEditPDFState(isDateSelectable = {
+    private val _uiState = MutableStateFlow(AddEditPDFState(isDateSelectableStartInterval = {
         true
-    }))
+    }, isDateSelectableEndInterval = { true }))
     val uiState: StateFlow<AddEditPDFState> = _uiState.asStateFlow()
 
     private val oldestDialysis = dialysisDao.getOldestDialysis()
@@ -32,14 +31,19 @@ class PDFViewModel(
         resetState()
     }
 
-    private fun resetState() {
+    fun resetState() {
         viewModelScope.launch {
             oldestDialysis.collect { oldestDialysis ->
                 if (oldestDialysis.isNotEmpty()) {
                     _uiState.update {
-                        AddEditPDFState(isDateSelectable = {
-                            it >= oldestDialysis[0] && it <= System.currentTimeMillis()
-                        })
+                        AddEditPDFState(startInterval = 0,
+                            endInterval = 0,
+                            isDateSelectableStartInterval = {
+                                it >= oldestDialysis[0] && it <= System.currentTimeMillis()
+                            },
+                            isDateSelectableEndInterval = {
+                                it >= oldestDialysis[0] && it <= System.currentTimeMillis()
+                            })
                     }
                 }
             }
@@ -56,7 +60,11 @@ class PDFViewModel(
 
             is AddEditPDFEvent.OnStartIntervalChanged -> {
                 _uiState.update { currentState ->
-                    currentState.copy(startInterval = event.start)
+                    currentState.copy(startInterval = event.start, isDateSelectableEndInterval = {
+                        // after the start date is selected, we want to update the lambda to only
+                        // considers selectable the days after the start interval
+                        currentState.isDateSelectableEndInterval(it) && (it >= event.start)
+                    })
                 }
             }
 

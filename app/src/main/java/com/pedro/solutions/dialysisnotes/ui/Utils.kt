@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class Utils {
 
     companion object {
-        const val DATE_FORMAT_DEFAULT = "dd/MM/yy hh:mm"
+        const val DATE_FORMAT_DEFAULT = "dd/MM/yyyy hh:mm"
+        const val DATE_FORMAT_DEFAULT_ONLY_DATE = "dd/MM/yyyy"
 
         const val MAX_OBSERVATIONS_CHARACTERS_SIZE = 10_000
 
@@ -18,7 +20,8 @@ class Utils {
         }
 
         fun getDateAndTimeFromMillis(timeInMillis: Long, format: String, locale: Locale): String {
-            return SimpleDateFormat(format, locale).format(Date(timeInMillis))
+            if(timeInMillis == 0L) return ""
+            return SimpleDateFormat(format, locale).apply { timeZone = TimeZone.getTimeZone("GMT") }.format(Date(timeInMillis))
         }
 
         fun isStringInt(num: String): Boolean {

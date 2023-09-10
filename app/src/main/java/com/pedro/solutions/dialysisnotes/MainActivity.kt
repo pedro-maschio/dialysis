@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
                     })
                 }
                 composable(DialysisDestination.PDFList.route) {
+                    pdfViewModel.resetState()
                     PDFList()
                 }
                 composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {

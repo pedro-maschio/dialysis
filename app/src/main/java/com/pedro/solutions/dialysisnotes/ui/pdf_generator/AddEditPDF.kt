@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,9 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
+import com.pedro.solutions.dialysisnotes.ui.Utils
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,55 +33,82 @@ fun AddEditPDF(viewModel: PDFViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
-    var showDatePickerDialog by remember {
+    var showFirstDatePickerDialog by remember {
+        mutableStateOf(false)
+    }
+    var showSecondDatePickerDialog by remember {
         mutableStateOf(false)
     }
 
     CommonScaffold(screenTitle = stringResource(id = R.string.add_edit_pdf)) { innerpadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(innerpadding)
                 .verticalScroll(scrollState)
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                TextField(value = uiState.patient, onValueChange = {
-                    viewModel.onEvent(AddEditPDFEvent.OnPDFPatientChanged(it))
-                }, label = { Text(text = stringResource(id = R.string.patient_name)) })
+                TextField(value = uiState.patient,
+                    onValueChange = {
+                        viewModel.onEvent(AddEditPDFEvent.OnPDFPatientChanged(it))
+                    },
+                    label = { Text(text = stringResource(id = R.string.patient_name)) },
+                    modifier = Modifier.fillMaxWidth(0.9F)
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                if (showDatePickerDialog) {
-                    CustomDatePickerDialog(
-                        onDateSelected = {
-                            viewModel.onEvent(AddEditPDFEvent.OnStartIntervalChanged(it))
-                        },
-                        onDismiss = { showDatePickerDialog = false },
-                        isDateSelectable = uiState.isDateSelectable
+                if (showFirstDatePickerDialog) {
+                    CustomDatePickerDialog(onDateSelected = {
+                        viewModel.onEvent(AddEditPDFEvent.OnStartIntervalChanged(it))
+                    },
+                        onDismiss = { showFirstDatePickerDialog = false },
+                        isDateSelectable = uiState.isDateSelectableStartInterval
                     )
                 }
-                TextField(value = uiState.startInterval.toString(), onValueChange = {}, Modifier.onFocusChanged {
-                    if (it.hasFocus) {
-                        showDatePickerDialog = true
-                    }
-                }, label = { Text(text = stringResource(id = R.string.intervalo_inicio)) })
+                TextField(value = Utils.getDateAndTimeFromMillis(
+                    uiState.startInterval,
+                    Utils.DATE_FORMAT_DEFAULT_ONLY_DATE,
+                    Utils.getDefaultLocale(
+                        LocalContext.current
+                    )
+                ),
+                    onValueChange = {},
+                    Modifier
+                        .onFocusChanged {
+                            if (it.hasFocus) {
+                                showFirstDatePickerDialog = true
+                            }
+                        }
+                        .fillMaxWidth(0.9F),
+                    label = { Text(text = stringResource(id = R.string.intervalo_inicio)) })
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                if (showDatePickerDialog) {
-                    CustomDatePickerDialog(
-                        onDateSelected = {
-                            viewModel.onEvent(AddEditPDFEvent.OnFinalIntervalChanged(it))
-                        },
-                        onDismiss = { showDatePickerDialog = false },
-                        isDateSelectable = uiState.isDateSelectable
+                if (showSecondDatePickerDialog) {
+                    CustomDatePickerDialog(onDateSelected = {
+                        viewModel.onEvent(AddEditPDFEvent.OnFinalIntervalChanged(it))
+                    },
+                        onDismiss = { showSecondDatePickerDialog = false },
+                        isDateSelectable = uiState.isDateSelectableEndInterval
                     )
                 }
-                TextField(value = uiState.endInterval.toString(), onValueChange = {}, Modifier.onFocusChanged {
-                    if (it.hasFocus) {
-                        showDatePickerDialog = true
-                    }
-                }, label = { Text(text = stringResource(id = R.string.intervalo_fim)) })
+                TextField(value = Utils.getDateAndTimeFromMillis(
+                    uiState.endInterval,
+                    Utils.DATE_FORMAT_DEFAULT_ONLY_DATE,
+                    Utils.getDefaultLocale(
+                        LocalContext.current
+                    )
+                ),
+                    onValueChange = {},
+                    Modifier
+                        .onFocusChanged {
+                            if (it.hasFocus) {
+                                showSecondDatePickerDialog = true
+                            }
+                        }
+                        .fillMaxWidth(0.9F),
+                    label = { Text(text = stringResource(id = R.string.intervalo_fim)) })
             }
         }
     }

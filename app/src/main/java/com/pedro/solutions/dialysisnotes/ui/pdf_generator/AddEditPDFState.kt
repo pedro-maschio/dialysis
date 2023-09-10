@@ -5,5 +5,6 @@ data class AddEditPDFState(
     val startInterval: Long = 0,
     val endInterval: Long = 0,
     val fileDirectory: String = "",
-    val isDateSelectable: (Long) -> Boolean
+    val isDateSelectableStartInterval: (Long) -> Boolean,
+    val isDateSelectableEndInterval: (Long) -> Boolean
 )
