@@ -1,1 +1,0 @@
-data class DialysisItemState(val dialysis: Boolean)

@@ -5,13 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.pedro.solutions.dialysisnotes.data.Dialysis
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DialysisDAO {
     @Query("SELECT * FROM Dialysis ORDER BY created_at DESC")
-    fun getAllDialysis(): Flow<List<Dialysis>>
+    fun getAllDialysisNewestFirst(): Flow<List<Dialysis>>
+
+    @Query("SELECT created_at FROM Dialysis ORDER BY created_at ASC LIMIT(1)")
+    fun getOldestDialysis(): Flow<List<Long>>
+
 
     @Query("SELECT * FROM Dialysis WHERE id = :id")
     suspend fun findDialysisById(id: Int): Dialysis?

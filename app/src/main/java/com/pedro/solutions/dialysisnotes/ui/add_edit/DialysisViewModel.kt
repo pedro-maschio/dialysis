@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class DialysisViewModel(
     private val dao: DialysisDAO, private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val dialysisList: LiveData<List<Dialysis>> = dao.getAllDialysis().asLiveData()
+    val dialysisList: LiveData<List<Dialysis>> = dao.getAllDialysisNewestFirst().asLiveData()
 
     private val _uiState = MutableStateFlow(AddEditDialysisState())
     val uiState: StateFlow<AddEditDialysisState> = _uiState.asStateFlow()

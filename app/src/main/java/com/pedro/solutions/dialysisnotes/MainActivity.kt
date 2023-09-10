@@ -1,8 +1,6 @@
 package com.pedro.solutions.dialysisnotes
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -40,14 +38,16 @@ import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.AddEditPDF
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFList
+import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: DialysisViewModel by viewModels {
+    private val dialysisViewModel: DialysisViewModel by viewModels {
         DialysisViewModel.Factory
     }
-
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    private val pdfViewModel: PDFViewModel by viewModels {
+        PDFViewModel.Factory
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -124,13 +124,13 @@ class MainActivity : ComponentActivity() {
                     })
                 ) {
                     val id = it.arguments?.getInt("userId")
-                    viewModel.loadDialysisItem(id)
-                    AddEditDialysis(viewModel, onSaveOrDeleteButtonSelected = { destination ->
+                    dialysisViewModel.loadDialysisItem(id)
+                    AddEditDialysis(dialysisViewModel, onSaveOrDeleteButtonSelected = { destination ->
                         navController.navigate(destination.route)
                     })
                 }
                 composable(DialysisDestination.MainScreen.route) {
-                    DialysisList(viewModel, innerPadding, onItemClicked = { itemId ->
+                    DialysisList(dialysisViewModel, innerPadding, onItemClicked = { itemId ->
                         navController.navigate(DialysisDestination.AddEditDialysis.route + "/$itemId")
                     })
                 }
@@ -138,7 +138,7 @@ class MainActivity : ComponentActivity() {
                     PDFList()
                 }
                 composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
-                    AddEditPDF()
+                    AddEditPDF(pdfViewModel)
                 }
             }
         }

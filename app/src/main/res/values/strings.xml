@@ -10,4 +10,7 @@
     <string name="atualizado">Atualizado %s</string>
     <string name="generated_pdfs">PDFs</string>
     <string name="add_edit_pdf">Gerar PDF</string>
+    <string name="patient_name">Nome do paciente</string>
+    <string name="intervalo_inicio">Gerar a partir de</string>
+    <string name="intervalo_fim">Até</string>
 </resources>
