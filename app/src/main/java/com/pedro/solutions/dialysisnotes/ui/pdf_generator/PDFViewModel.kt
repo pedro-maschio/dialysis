@@ -1,11 +1,15 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf_generator
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.data.DialysisDAO
 import com.pedro.solutions.dialysisnotes.data.pdfDao
@@ -16,8 +20,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PDFViewModel(
-    private val dialysisDao: DialysisDAO,
+    dialysisDao: DialysisDAO,
     private val pdfDao: pdfDao,
+    application: DialysisApplication,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddEditPDFState(isDateSelectableStartInterval = {
@@ -26,6 +31,8 @@ class PDFViewModel(
     val uiState: StateFlow<AddEditPDFState> = _uiState.asStateFlow()
 
     private val oldestDialysis = dialysisDao.getOldestDialysis()
+
+    private val workManager = WorkManager.getInstance(application.applicationContext)
 
     init {
         resetState()
@@ -48,6 +55,17 @@ class PDFViewModel(
                 }
             }
         }
+    }
+
+    fun generatePDF(filePath: Uri?, startInterval: Long, endInterval: Long) {
+        val pdfWork = OneTimeWorkRequest.Builder(GeneratePDFWorker::class.java)
+        val data = Data.Builder()
+        data.putString("file_path", filePath.toString())
+        data.putLong("start_interval", startInterval)
+        data.putLong("end_interval", endInterval)
+
+        pdfWork.setInputData(data.build())
+        workManager.enqueue(pdfWork.build())
     }
 
     fun onEvent(event: AddEditPDFEvent) {
@@ -88,6 +106,7 @@ class PDFViewModel(
                 return PDFViewModel(
                     (application as DialysisApplication).database.dialysisDao(),
                     application.database.pdfDao(),
+                    application,
                     savedStateHandle
                 ) as T
             }

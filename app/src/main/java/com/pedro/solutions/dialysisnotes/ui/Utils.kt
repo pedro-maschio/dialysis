@@ -45,5 +45,12 @@ class Utils {
                     if (it.isLowerCase()) it.titlecase(locale) else it.toString()
                 }
         }
+
+        fun generatePDFFileName(context: Context, startInterval: Long, endInterval: Long): String {
+            val start = getDateAndTimeFromMillis(startInterval, DATE_FORMAT_DEFAULT_ONLY_DATE, getDefaultLocale(context))
+            val end = getDateAndTimeFromMillis(endInterval, DATE_FORMAT_DEFAULT_ONLY_DATE, getDefaultLocale(context))
+
+            return "DialysisList-$start-$end.pdf"
+        }
     }
 }

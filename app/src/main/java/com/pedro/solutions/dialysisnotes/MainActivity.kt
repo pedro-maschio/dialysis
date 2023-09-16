@@ -41,6 +41,7 @@ import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFList
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
 
+
 class MainActivity : ComponentActivity() {
     private val dialysisViewModel: DialysisViewModel by viewModels {
         DialysisViewModel.Factory
@@ -48,12 +49,12 @@ class MainActivity : ComponentActivity() {
     private val pdfViewModel: PDFViewModel by viewModels {
         PDFViewModel.Factory
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             DialysisNotesTheme {
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
@@ -90,8 +91,7 @@ class MainActivity : ComponentActivity() {
             TopAppBar(title = { Text(text = getString(R.string.app_name)) })
         }, floatingActionButton = {
             FloatingButton(
-                navController = navController,
-                onClick = onClickFloatingButton
+                navController = navController, onClick = onClickFloatingButton
             )
         }, bottomBar = {
             BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
@@ -125,9 +125,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val id = it.arguments?.getInt("userId")
                     dialysisViewModel.loadDialysisItem(id)
-                    AddEditDialysis(dialysisViewModel, onSaveOrDeleteButtonSelected = { destination ->
-                        navController.navigate(destination.route)
-                    })
+                    AddEditDialysis(
+                        dialysisViewModel,
+                        onSaveOrDeleteButtonSelected = { destination ->
+                            navController.navigate(destination.route)
+                        })
                 }
                 composable(DialysisDestination.MainScreen.route) {
                     DialysisList(dialysisViewModel, innerPadding, onItemClicked = { itemId ->
@@ -139,7 +141,9 @@ class MainActivity : ComponentActivity() {
                     PDFList()
                 }
                 composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
-                    AddEditPDF(pdfViewModel)
+                    AddEditPDF(pdfViewModel) {
+                        navController.navigate(it.route)
+                    }
                 }
             }
         }
@@ -156,8 +160,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val visibleDestinations =
-            listOf(DialysisDestination.MainScreen.route, DialysisDestination.PDFList.route)
-        /* TODO: this is not working fine, it is a known issue when a floating button
+            listOf(DialysisDestination.MainScreen.route, DialysisDestination.PDFList.route)/* TODO: this is not working fine, it is a known issue when a floating button
             is set visible=false and then visible=true
             https://issuetracker.google.com/issues/224005027
             https://issuetracker.google.com/issues/236018302
@@ -169,4 +172,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

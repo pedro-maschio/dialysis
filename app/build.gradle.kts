@@ -87,6 +87,10 @@ dependencies {
 
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    // Work manager
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
+
     // Lifecycle
     val lifecycleVersion = "2.6.1"
 

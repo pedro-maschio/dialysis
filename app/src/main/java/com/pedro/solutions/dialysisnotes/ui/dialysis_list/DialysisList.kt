@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.ui.Utils
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 
+// TODO: add a note when there is no Dialysis registered
 @Composable
 fun DialysisList(
     viewModel: DialysisViewModel,

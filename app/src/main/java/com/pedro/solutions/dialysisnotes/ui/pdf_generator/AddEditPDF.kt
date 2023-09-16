@@ -1,5 +1,9 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf_generator
 
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,12 +28,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
+import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
 import com.pedro.solutions.dialysisnotes.ui.Utils
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEditPDF(viewModel: PDFViewModel) {
+fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDestination) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -40,6 +44,14 @@ fun AddEditPDF(viewModel: PDFViewModel) {
         mutableStateOf(false)
     }
 
+    val result = remember { mutableStateOf<Uri?>(null) }
+
+    val launcherActivity =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
+            result.value = it
+            viewModel.generatePDF(result.value, uiState.startInterval, uiState.endInterval)
+            onGeneratePDFButtonClicked(DialysisDestination.PDFList)
+        }
     CommonScaffold(screenTitle = stringResource(id = R.string.add_edit_pdf)) { innerpadding ->
         Column(
             modifier = Modifier
@@ -109,6 +121,17 @@ fun AddEditPDF(viewModel: PDFViewModel) {
                         }
                         .fillMaxWidth(0.9F),
                     label = { Text(text = stringResource(id = R.string.intervalo_fim)) })
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                val context = LocalContext.current
+                Button(onClick = {
+                    launcherActivity.launch(
+                        Utils.generatePDFFileName(context, uiState.startInterval, uiState.endInterval)
+                    )
+                }) {
+                    Text(text = stringResource(id = R.string.gerar_pdf))
+                }
             }
         }
     }

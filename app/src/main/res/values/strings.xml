@@ -13,4 +13,5 @@
     <string name="patient_name">Nome do paciente</string>
     <string name="intervalo_inicio">Gerar a partir de</string>
     <string name="intervalo_fim">Até</string>
+    <string name="gerar_pdf">Gerar PDF</string>
 </resources>
