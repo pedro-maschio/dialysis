@@ -49,7 +49,7 @@ fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDes
     val launcherActivity =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
             result.value = it
-            viewModel.generatePDF(result.value, uiState.startInterval, uiState.endInterval)
+            viewModel.generatePDF(result.value, uiState.patient, uiState.startInterval, uiState.endInterval)
             onGeneratePDFButtonClicked(DialysisDestination.PDFList)
         }
     CommonScaffold(screenTitle = stringResource(id = R.string.add_edit_pdf)) { innerpadding ->

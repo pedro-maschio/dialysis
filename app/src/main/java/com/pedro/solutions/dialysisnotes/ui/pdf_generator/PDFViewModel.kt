@@ -57,10 +57,11 @@ class PDFViewModel(
         }
     }
 
-    fun generatePDF(filePath: Uri?, startInterval: Long, endInterval: Long) {
+    fun generatePDF(filePath: Uri?, patientName: String, startInterval: Long, endInterval: Long) {
         val pdfWork = OneTimeWorkRequest.Builder(GeneratePDFWorker::class.java)
         val data = Data.Builder()
         data.putString("file_path", filePath.toString())
+        data.putString("patient_name", patientName)
         data.putLong("start_interval", startInterval)
         data.putLong("end_interval", endInterval)
 

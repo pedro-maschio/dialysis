@@ -10,7 +10,9 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.pedro.solutions.dialysisnotes.DialysisApplication
+import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.data.Dialysis
+import com.pedro.solutions.dialysisnotes.ui.Utils
 import kotlin.math.min
 
 class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -19,6 +21,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
         return try {
 
             val directory = Uri.parse(inputData.getString("file_path"))
+            val patientName = inputData.getString("patient_name")
             val startInterval = inputData.getLong("start_interval", 0)
             val endInterval = inputData.getLong("end_interval", 0)
             if (startInterval == 0L || endInterval == 0L) return Result.failure()
@@ -27,7 +30,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
 
             val allDialysis = dialysisDao.getDialysisBetweenInterval(startInterval, endInterval)
 
-            generatePdf(allDialysis, directory)
+            generatePdf(allDialysis, patientName, startInterval, endInterval, directory)
             Result.success()
         } catch (throwable: Throwable) {
             Log.d(TAG, "Error while trying to generate a PDF")
@@ -35,7 +38,13 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
         }
     }
 
-    private fun generatePdf(allDialysis: List<Dialysis>, directory: Uri?) {
+    private fun generatePdf(
+        allDialysis: List<Dialysis>,
+        patientName: String?,
+        startInterval: Long,
+        endInterval: Long,
+        directory: Uri?
+    ) {
         val linesPerPage = min(30, allDialysis.size)
         var numberOfPages = (allDialysis.size / linesPerPage)
         if (numberOfPages == 0) numberOfPages++
@@ -45,23 +54,24 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
 
         var dialysisIdx = 0
         var yPos = 200f
-
         val document = PdfDocument()
 
         while (numberOfPages > 0) {
             val pageInfo = PageInfo.Builder(2480, 3508, 1).create()
 
             val page = document.startPage(pageInfo)
-
             val canvas = page.canvas
 
-            val text = Paint()
-            text.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-            text.textSize = 15f
+            canvas.drawText(getHeaderText(startInterval, endInterval), 500f, yPos, getHeaderPaint())
+            yPos += 100
 
+            canvas.drawText("Paciente: ${patientName ?: ""}", 100f, yPos, patientNamePaint())
+            yPos += 100
             var tmpLinesPerPage = linesPerPage
             while (tmpLinesPerPage > 0) {
-                canvas.drawText(allDialysis[dialysisIdx++].initialUf.toString(), 200f, yPos, text)
+                canvas.drawText(
+                    getDialysisString(allDialysis[dialysisIdx++]), 100f, yPos, patientNamePaint()
+                )
                 yPos += 50
                 tmpLinesPerPage--
             }
@@ -81,5 +91,48 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             }
         }
         document.close()
+    }
+
+    private fun getDialysisString(dialysis: Dialysis): String {
+        val createdAt = Utils.getDateAndTimeFromMillis(
+            dialysis.createdAt,
+            Utils.DATE_FORMAT_DEFAULT_ONLY_DATE,
+            Utils.getDefaultLocale(applicationContext)
+        )
+
+        return "$createdAt ${applicationContext.getString(R.string.uf_inicial)} ${dialysis.initialUf}${
+            applicationContext.getString(
+                R.string.uf_final
+            )
+        } ${dialysis.finalUf} ${applicationContext.getString(R.string.observations)} ${dialysis.notes}"
+    }
+
+    private fun getHeaderText(startInterval: Long, endInterval: Long): String {
+        val start = Utils.getDateAndTimeFromMillis(
+            startInterval,
+            Utils.DATE_FORMAT_DEFAULT_ONLY_DATE,
+            Utils.getDefaultLocale(applicationContext)
+        )
+        val end = Utils.getDateAndTimeFromMillis(
+            endInterval,
+            Utils.DATE_FORMAT_DEFAULT_ONLY_DATE,
+            Utils.getDefaultLocale(applicationContext)
+        )
+        return "Lista de Diálises de $start a $end"
+    }
+
+    private fun getHeaderPaint(): Paint {
+        val text = Paint()
+        text.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        text.textSize = 55f
+        return text
+    }
+
+    private fun patientNamePaint(): Paint {
+        val text = Paint()
+        text.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+        text.textSize = 30f
+
+        return text
     }
 }
