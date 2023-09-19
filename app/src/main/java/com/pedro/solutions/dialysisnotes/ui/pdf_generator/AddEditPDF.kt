@@ -130,7 +130,7 @@ fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDes
                         Utils.generatePDFFileName(context, uiState.startInterval, uiState.endInterval)
                     )
                 }) {
-                    Text(text = stringResource(id = R.string.gerar_pdf))
+                    Text(text = stringResource(id = R.string.add_edit_pdf))
                 }
             }
         }
