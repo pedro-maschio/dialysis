@@ -12,7 +12,7 @@ interface DialysisDAO {
     @Query("SELECT * FROM Dialysis ORDER BY created_at DESC")
     fun getAllDialysisNewestFirst(): Flow<List<Dialysis>>
 
-    @Query("SELECT * FROM Dialysis WHERE created_at >= :startInterval AND created_at <= :endInterval ORDER BY created_at DESC")
+    @Query("SELECT * FROM Dialysis WHERE created_at >= :startInterval AND created_at <= :endInterval ORDER BY created_at ASC")
     fun getDialysisBetweenInterval(startInterval: Long, endInterval: Long): List<Dialysis>
 
     @Query("SELECT created_at FROM Dialysis ORDER BY created_at ASC LIMIT(1)")

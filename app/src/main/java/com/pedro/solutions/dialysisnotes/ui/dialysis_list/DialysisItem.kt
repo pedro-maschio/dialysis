@@ -33,7 +33,7 @@ fun DialysisItem(dialysis: Dialysis, modifier: Modifier, onClick: () -> (Unit)) 
     }
 
     Card(
-        modifier = modifier.clickable { onClick.invoke() }, shape = RoundedCornerShape(15.dp)
+        modifier = modifier.clickable { onClick() }, shape = RoundedCornerShape(15.dp)
     ) {
         Row(modifier = Modifier.padding(5.dp)) {
             Text(text = stringResource(id = R.string.criado_as, createdAt), fontSize = 10.sp)

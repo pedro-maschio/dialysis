@@ -125,8 +125,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val id = it.arguments?.getInt("userId")
                     dialysisViewModel.loadDialysisItem(id)
-                    AddEditDialysis(
-                        dialysisViewModel,
+                    AddEditDialysis(dialysisViewModel,
                         onSaveOrDeleteButtonSelected = { destination ->
                             navController.navigate(destination.route)
                         })
@@ -138,7 +137,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(DialysisDestination.PDFList.route) {
                     pdfViewModel.resetState()
-                    PDFList()
+                    PDFList(pdfViewModel, innerPadding)
                 }
                 composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
                     AddEditPDF(pdfViewModel) {

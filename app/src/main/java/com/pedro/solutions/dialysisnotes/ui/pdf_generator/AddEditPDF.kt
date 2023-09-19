@@ -34,7 +34,7 @@ import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @Composable
 fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDestination) -> Unit) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.addPDFState.collectAsState()
     val scrollState = rememberScrollState()
 
     var showFirstDatePickerDialog by remember {
@@ -44,12 +44,13 @@ fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDes
         mutableStateOf(false)
     }
 
-    val result = remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
 
     val launcherActivity =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
-            result.value = it
-            viewModel.generatePDF(result.value, uiState.patient, uiState.startInterval, uiState.endInterval)
+            viewModel.onEvent(AddEditPDFEvent.OnDirectoryChanged(it.toString()))
+            viewModel.generatePDF(it, uiState.patient, uiState.startInterval, uiState.endInterval)
+            viewModel.savePDF()
             onGeneratePDFButtonClicked(DialysisDestination.PDFList)
         }
     CommonScaffold(screenTitle = stringResource(id = R.string.add_edit_pdf)) { innerpadding ->
@@ -124,7 +125,6 @@ fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDes
             }
             Spacer(modifier = Modifier.height(30.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                val context = LocalContext.current
                 Button(onClick = {
                     launcherActivity.launch(
                         Utils.generatePDFFileName(context, uiState.startInterval, uiState.endInterval)

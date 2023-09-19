@@ -81,6 +81,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
         }
 
         try {
+            Log.d(TAG, "Trying to save PDF at: $directory")
             applicationContext.contentResolver.openOutputStream(directory!!).use {
                 document.writeTo(it)
             }
@@ -89,8 +90,9 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             e.message?.let {
                 Log.d(TAG, it)
             }
+        } finally {
+            document.close()
         }
-        document.close()
     }
 
     private fun getDialysisString(dialysis: Dialysis): String {
