@@ -7,7 +7,7 @@ A simple Peritoneal dialysis tracker written completely in Kotlin using the prin
 - Allows users to generate PDFs with the selected target interval locally;
 - All data is stored in a Room database
 
-### App created with sole purpose of leaning - a lot of issues in the code yet
+### App created with sole purpose of learning - a lot of issues in the code yet
 
 ## What is missing
 
