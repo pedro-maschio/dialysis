@@ -9,8 +9,8 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.pedro.solutions.dialysisnotes.DialysisApplication
-import com.pedro.solutions.dialysisnotes.data.Dialysis
-import com.pedro.solutions.dialysisnotes.data.DialysisDAO
+import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
+import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDAO
 import com.pedro.solutions.dialysisnotes.ui.Utils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -131,7 +131,7 @@ class DialysisViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 val savedStateHandle = extras.createSavedStateHandle()
                 return DialysisViewModel(
-                    (application as DialysisApplication).database.dialysisDao(), savedStateHandle
+                    (application as DialysisApplication).dialysisDatabase.dialysisDao(), savedStateHandle
                 ) as T
             }
         }

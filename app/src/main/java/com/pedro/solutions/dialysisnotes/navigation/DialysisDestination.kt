@@ -9,6 +9,7 @@ sealed class DialysisDestination(
     @StringRes val resourceId: Int,
 ) {
     data object MainScreen : DialysisDestination("mainScreen", R.string.app_name)
+    data object LoginScreen : DialysisDestination("login", R.string.login_title)
     data object AddEditDialysis :
         DialysisDestination("addEditDialysis", R.string.create_new_dialysis)
 

@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.data
+package com.pedro.solutions.dialysisnotes.data.dialysis
 
 import androidx.room.Dao
 import androidx.room.Insert

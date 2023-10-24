@@ -36,6 +36,8 @@ import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
 import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
+import com.pedro.solutions.dialysisnotes.ui.login.LoginScreen
+import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.AddEditPDF
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFList
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
@@ -48,6 +50,10 @@ class MainActivity : ComponentActivity() {
     }
     private val pdfViewModel: PDFViewModel by viewModels {
         PDFViewModel.Factory
+    }
+
+    private val loginViewModel: LoginViewModel by viewModels {
+        LoginViewModel.Factory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +75,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
         val navController = rememberNavController()
+        val startDestination: String =
+            if (loginViewModel.isUserLoggedIn()) DialysisDestination.MainScreen.route else DialysisDestination.LoginScreen.route
 
         val bottomNavigationItems =
             listOf(DialysisDestination.MainScreen, DialysisDestination.PDFList)
@@ -94,27 +102,28 @@ class MainActivity : ComponentActivity() {
                 navController = navController, onClick = onClickFloatingButton
             )
         }, bottomBar = {
-            BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
-                bottomNavigationItems.forEachIndexed { index, screen ->
-                    BottomNavigationItem(selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route)
-                        },
-                        // TODO: find out why this icon it is not showing
-                        icon = {
-                            bottomNavigationIcons[index]
-                        },
-                        label = { Text(text = stringResource(screen.resourceId)) })
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            val route = currentDestination?.route
+            if (route != null && route != DialysisDestination.LoginScreen.route) {
+                BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
+                    bottomNavigationItems.forEachIndexed { index, screen ->
+                        BottomNavigationItem(selected = currentDestination.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route)
+                            },
+                            // TODO: find out why this icon it is not showing
+                            icon = {
+                                bottomNavigationIcons[index]
+                            },
+                            label = { Text(text = stringResource(screen.resourceId)) })
+                    }
                 }
             }
         }, modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
             NavHost(
-                navController = navController,
-                startDestination = DialysisDestination.MainScreen.route
+                navController = navController, startDestination = startDestination
             ) {
                 composable(
                     DialysisDestination.AddEditDialysis.route + "/{userId}",
@@ -142,6 +151,12 @@ class MainActivity : ComponentActivity() {
                 composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
                     AddEditPDF(pdfViewModel) {
                         navController.navigate(it.route)
+                    }
+                }
+
+                composable(DialysisDestination.LoginScreen.route) {
+                    LoginScreen(loginViewModel = loginViewModel) {
+                        navController.navigate(DialysisDestination.MainScreen.route)
                     }
                 }
             }

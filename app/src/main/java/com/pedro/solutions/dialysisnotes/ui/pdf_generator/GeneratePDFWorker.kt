@@ -11,7 +11,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.R
-import com.pedro.solutions.dialysisnotes.data.Dialysis
+import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
 import com.pedro.solutions.dialysisnotes.ui.Utils
 import kotlin.math.min
 
@@ -26,7 +26,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             val endInterval = inputData.getLong("end_interval", 0)
             if (startInterval == 0L || endInterval == 0L) return Result.failure()
 
-            val dialysisDao = (applicationContext as DialysisApplication).database.dialysisDao()
+            val dialysisDao = (applicationContext as DialysisApplication).dialysisDatabase.dialysisDao()
 
             val allDialysis = dialysisDao.getDialysisBetweenInterval(startInterval, endInterval)
 

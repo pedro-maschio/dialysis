@@ -1,7 +1,5 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf_generator
 
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -127,7 +125,9 @@ fun AddEditPDF(viewModel: PDFViewModel, onGeneratePDFButtonClicked: (DialysisDes
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(onClick = {
                     launcherActivity.launch(
-                        Utils.generatePDFFileName(context, uiState.startInterval, uiState.endInterval)
+                        Utils.generatePDFFileName(
+                            context, uiState.startInterval, uiState.endInterval
+                        )
                     )
                 }) {
                     Text(text = stringResource(id = R.string.add_edit_pdf))

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Dialysis Notes</string>
     <string name="create_new_dialysis">Criar nova diálise</string>
+    <string name="login_title">Fazer Login</string>
     <string name="uf_inicial">UF inicial</string>
     <string name="uf_final">UF final</string>
     <string name="observations">Observações</string>
@@ -15,4 +16,7 @@
     <string name="intervalo_fim">Até</string>
     <string name="de_as">De %s a %s</string>
     <string name="arquivo_nao_encontrado">Arquivo não encontrado, por favor gere um novo relatório</string>
+    <string name="email_placeholder">E-mail</string>
+    <string name="password_placeholder">Senha</string>
+    <string name="register_title">Cadastrar</string>
 </resources>

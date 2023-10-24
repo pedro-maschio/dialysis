@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pedro.solutions.dialysisnotes.R
-import com.pedro.solutions.dialysisnotes.data.Dialysis
+import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
 import com.pedro.solutions.dialysisnotes.ui.Utils
 
 @Composable

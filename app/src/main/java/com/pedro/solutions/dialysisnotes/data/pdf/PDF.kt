@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.data
+package com.pedro.solutions.dialysisnotes.data.pdf
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

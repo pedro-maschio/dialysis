@@ -1,10 +1,6 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf_generator
 
-import android.content.ContentResolver
-import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
-import android.provider.OpenableColumns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,9 +12,9 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.pedro.solutions.dialysisnotes.DialysisApplication
-import com.pedro.solutions.dialysisnotes.data.DialysisDAO
-import com.pedro.solutions.dialysisnotes.data.PDF
-import com.pedro.solutions.dialysisnotes.data.pdfDao
+import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDAO
+import com.pedro.solutions.dialysisnotes.data.pdf.PDF
+import com.pedro.solutions.dialysisnotes.data.pdf.pdfDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -147,8 +143,8 @@ class PDFViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 val savedStateHandle = extras.createSavedStateHandle()
                 return PDFViewModel(
-                    (application as DialysisApplication).database.dialysisDao(),
-                    application.database.pdfDao(),
+                    (application as DialysisApplication).dialysisDatabase.dialysisDao(),
+                    application.dialysisDatabase.pdfDao(),
                     application,
                     savedStateHandle
                 ) as T
