@@ -75,16 +75,20 @@ class LoginViewModel(
     }
 
     fun onEvent(event: LoginEvent) {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
         when (event) {
             is LoginEvent.OnEmailChangedEvent -> {
                 _uiState.update { currentState ->
-                    currentState.copy(email = event.email)
+                    currentState.copy(
+                        email = event.email,
+                        isEmailValid = event.email.matches(emailRegex.toRegex())
+                    )
                 }
             }
 
             is LoginEvent.OnPasswordChangedEvent -> {
                 _uiState.update { currentState ->
-                    currentState.copy(password = event.password)
+                    currentState.copy(password = event.password, isPasswordValid = event.password.length >= 5)
                 }
             }
 

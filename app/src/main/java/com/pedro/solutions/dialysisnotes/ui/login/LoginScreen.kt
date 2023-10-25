@@ -32,7 +32,6 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLogin: () -> Unit) {
         onLogin()
     }
     CommonScaffold(screenTitle = stringResource(R.string.login_title)) {
-
         Column(
             modifier = Modifier
                 .padding(it)
@@ -54,7 +53,8 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLogin: () -> Unit) {
                     Text(text = stringResource(id = R.string.email_placeholder))
                 },
                 maxLines = 1,
-                textStyle = TextStyle(MaterialTheme.colors.primary)
+                textStyle = TextStyle(MaterialTheme.colors.primary),
+                isError = !uiState.isEmailValid
             )
 
             OutlinedTextField(
@@ -74,7 +74,11 @@ fun LoginScreen(loginViewModel: LoginViewModel, onLogin: () -> Unit) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = PasswordVisualTransformation(),
                 textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
+                isError = !uiState.isPasswordValid,
             )
+            if (!uiState.isPasswordValid) {
+                Text(text = stringResource(id = R.string.password_error), color = Color.Red)
+            }
 
             Button(modifier = Modifier.padding(0.dp, 20.dp), onClick = {
                 loginViewModel.onEvent(LoginEvent.OnSwitchTabsEvent(isCreating = false))
