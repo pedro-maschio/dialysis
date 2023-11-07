@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.math.max
+import kotlin.math.min
 
 
 class PDFViewModel(
@@ -40,6 +42,8 @@ class PDFViewModel(
 
     private val oldestDialysis = dialysisDao.getOldestDialysis()
 
+    private val newestDialysis = dialysisDao.getNewestDialysis()
+
     private val workManager = WorkManager.getInstance(application.applicationContext)
 
     val allPDFsGenerated = pdfDao.getAllPDFs().asLiveData()
@@ -51,16 +55,18 @@ class PDFViewModel(
     fun resetState() {
         viewModelScope.launch {
             oldestDialysis.collect { oldestDialysis ->
-                if (oldestDialysis.isNotEmpty()) {
-                    _addPDFState.update {
-                        AddEditPDFState(startInterval = 0,
-                            endInterval = 0,
-                            isDateSelectableStartInterval = {
-                                it >= oldestDialysis[0] && it <= System.currentTimeMillis()
-                            },
-                            isDateSelectableEndInterval = {
-                                it >= oldestDialysis[0] && it <= System.currentTimeMillis()
-                            })
+                newestDialysis.collect { newestDialysis ->
+                    if (oldestDialysis.isNotEmpty() && newestDialysis.isNotEmpty()) {
+                        _addPDFState.update {
+                            AddEditPDFState(startInterval = 0,
+                                endInterval = 0,
+                                isDateSelectableStartInterval = {
+                                    (it >= min(oldestDialysis[0], System.currentTimeMillis())) && (it <= max(newestDialysis[0], System.currentTimeMillis()))
+                                },
+                                isDateSelectableEndInterval = {
+                                    (it >= min(oldestDialysis[0], System.currentTimeMillis())) && (it <= max(newestDialysis[0], System.currentTimeMillis()))
+                                })
+                        }
                     }
                 }
             }
