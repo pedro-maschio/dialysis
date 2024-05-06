@@ -36,8 +36,8 @@ class PDFViewModel(
     private val TAG = this.javaClass.simpleName
 
     private val _addPDFState = MutableStateFlow(AddEditPDFState(isDateSelectableStartInterval = {
-        true
-    }, isDateSelectableEndInterval = { true }))
+        false
+    }, isDateSelectableEndInterval = { false  }))
     val addPDFState: StateFlow<AddEditPDFState> = _addPDFState.asStateFlow()
 
     private val oldestDialysis = dialysisDao.getOldestDialysis()
