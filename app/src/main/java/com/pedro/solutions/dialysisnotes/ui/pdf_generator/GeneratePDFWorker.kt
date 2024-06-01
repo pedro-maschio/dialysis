@@ -29,11 +29,14 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             val dialysisDao = (applicationContext as DialysisApplication).dialysisDatabase.dialysisDao()
 
             val allDialysis = dialysisDao.getDialysisBetweenInterval(startInterval, endInterval)
+            Log.d(TAG, "allDialysis=${allDialysis.size} startInterval=$startInterval endInterval=$endInterval")
+            if(allDialysis.isEmpty()) return Result.failure()
+
 
             generatePdf(allDialysis, patientName, startInterval, endInterval, directory)
             Result.success()
         } catch (throwable: Throwable) {
-            Log.d(TAG, "Error while trying to generate a PDF")
+            Log.d(TAG, "Error while trying to generate a PDF ${throwable.message}")
             Result.failure()
         }
     }
