@@ -4,6 +4,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -13,7 +14,11 @@ import androidx.compose.runtime.Composable
 fun CustomDatePickerDialog(
     onDateSelected: (Long) -> Unit, onDismiss: () -> Unit, isDateSelectable: (Long) -> Boolean
 ) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(selectableDates = object:SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return isDateSelectable(utcTimeMillis)
+        }
+    })
     val selectedDate = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
 
     DatePickerDialog(onDismissRequest = { onDismiss() }, confirmButton = {
@@ -30,8 +35,6 @@ fun CustomDatePickerDialog(
             Text(text = "Cancelar")
         }
     }) {
-        DatePicker(state = datePickerState, dateValidator = {
-            isDateSelectable(it)
-        })
+        DatePicker(state = datePickerState)
     }
 }
