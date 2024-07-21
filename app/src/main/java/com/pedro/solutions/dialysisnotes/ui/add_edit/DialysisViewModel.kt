@@ -57,6 +57,7 @@ class DialysisViewModel(
             }
         }
     }
+
     private fun saveDialysis(isEditing: Boolean) {
         viewModelScope.launch {
             val d = Dialysis(
@@ -110,6 +111,12 @@ class DialysisViewModel(
             is AddEditDialysisEvent.OnDialysisDeleted -> {
                 deleteDialysis(event.id)
             }
+
+            is AddEditDialysisEvent.OnDialysisListDeleted -> {
+                event.toDeleteItems.forEach {
+                    deleteDialysis(it)
+                }
+            }
         }
     }
 
@@ -131,7 +138,8 @@ class DialysisViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 val savedStateHandle = extras.createSavedStateHandle()
                 return DialysisViewModel(
-                    (application as DialysisApplication).dialysisDatabase.dialysisDao(), savedStateHandle
+                    (application as DialysisApplication).dialysisDatabase.dialysisDao(),
+                    savedStateHandle
                 ) as T
             }
         }
