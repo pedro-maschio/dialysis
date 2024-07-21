@@ -6,9 +6,16 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -22,12 +29,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -37,6 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
+import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysisEvent
 import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
 import com.pedro.solutions.dialysisnotes.ui.login.LoginScreen
@@ -76,8 +88,22 @@ fun MainScreen(
         }
     }
 
+    var selectedItems = remember { mutableStateListOf<Int?>() }
+
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = stringResource(R.string.app_name)) })
+        if (selectedItems.isEmpty()) {
+            TopAppBar(title = { Text(text = stringResource(R.string.app_name)) })
+        } else {
+            AppBarDelete(
+                numSelectedItems = selectedItems.size
+            ) {
+                dialysisViewModel.onEvent(
+                    AddEditDialysisEvent.OnDialysisListDeleted(
+                        selectedItems.toList()
+                    )
+                )
+            }
+        }
     }, floatingActionButton = {
         FloatingButton(
             navController = navController, onClick = onClickFloatingButton
@@ -142,6 +168,10 @@ fun MainScreen(
                 DialysisList(
                     dialysisViewModel.dialysisList.observeAsState(initial = listOf()).value,
                     innerPadding,
+                    onSelectedItemsChanged = { changedList ->
+                        selectedItems.clear()
+                        selectedItems.addAll(changedList)
+                    },
                     onItemClicked = { itemId ->
                         navController.navigate(DialysisDestination.AddEditDialysis.route + "/$itemId")
                     })
@@ -166,6 +196,30 @@ fun MainScreen(
             }
         }
     }
+}
+
+@Composable
+fun AppBarDelete(numSelectedItems: Int, onDeleteCLicked: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "$numSelectedItems items selected")
+        Icon(
+            imageVector = Icons.Filled.Delete,
+            contentDescription = "",
+            modifier = Modifier.clickable { onDeleteCLicked() })
+    }
+}
+
+@Composable
+@Preview
+fun appBarDeletePreview() {
+    AppBarDelete(numSelectedItems = 10, {})
 }
 
 @Composable

@@ -12,6 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +31,8 @@ import com.pedro.solutions.dialysisnotes.ui.components.EmptyDialysisListIndicato
 fun DialysisList(
     dialysisList: List<Dialysis>,
     innerpadding: PaddingValues,
-    onItemClicked: (Int?) -> Unit
+    onItemClicked: (Int?) -> Unit,
+    onSelectedItemsChanged: (List<Int?>) -> Unit
 ) {
     if (dialysisList.isEmpty()) {
         Column(
@@ -41,6 +47,16 @@ fun DialysisList(
             )
         }
     }
+
+    val selectedItems = remember {
+        mutableStateListOf<Int?>()
+    }
+    var isInSelectionMode by remember {
+        mutableStateOf(false)
+    }
+
+    if (selectedItems.isEmpty()) isInSelectionMode = false
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -61,15 +77,37 @@ fun DialysisList(
                 )
                 prevMonth = currentMonth
             }
+
+            val isItemSelected = selectedItems.contains(item.id)
             DialysisItem(
                 dialysis = item,
+                isItemSelected = isItemSelected,
+                onClick = {
+                    if (isInSelectionMode) {
+                        if (selectedItems.contains(item.id))
+                            selectedItems.remove(item.id)
+                        else
+                            selectedItems.add(item.id)
+
+                        onSelectedItemsChanged(selectedItems.toList())
+                    } else {
+                        onItemClicked(item.id)
+                    }
+
+                },
+                onLongClick = {
+                    isInSelectionMode = true
+                    if (selectedItems.contains(item.id))
+                        selectedItems.remove(item.id)
+                    else
+                        selectedItems.add(item.id)
+                    onSelectedItemsChanged(selectedItems.toList())
+                },
                 Modifier
                     .fillMaxSize()
                     .height(160.dp)
                     .padding(10.dp)
-            ) {
-                onItemClicked(item.id)
-            }
+            )
         }
     }
 }
@@ -92,6 +130,7 @@ fun DialysisListPreview() {
 //            Dialysis(createdAt = System.currentTimeMillis(), System.currentTimeMillis(), 40, 90, "Just a preview", null),
         ),
         innerpadding = PaddingValues(20.dp),
+        onSelectedItemsChanged = {},
         onItemClicked = {
             // Handle item click if needed
         }
