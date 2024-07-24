@@ -102,6 +102,7 @@ fun MainScreen(
                         selectedItems.toList()
                     )
                 )
+                selectedItems.clear()
             }
         }
     }, floatingActionButton = {
@@ -156,6 +157,7 @@ fun MainScreen(
                     defaultValue = -1
                 })
             ) {
+                selectedItems.clear()
                 val id = it.arguments?.getInt("userId")
                 dialysisViewModel.loadDialysisItem(id)
                 AddEditDialysis(
@@ -177,6 +179,7 @@ fun MainScreen(
                     })
             }
             composable(DialysisDestination.PDFList.route) {
+                selectedItems.clear()
                 pdfViewModel.resetState()
                 PDFList(
                     pdfViewModel.allPDFsGenerated.observeAsState(initial = listOf()).value,
@@ -184,12 +187,14 @@ fun MainScreen(
                 )
             }
             composable(DialysisDestination.AddEditPDF.route + "/{PDFId}") {
+                selectedItems.clear()
                 AddEditPDF(pdfViewModel) {
                     navController.navigate(it.route)
                 }
             }
 
             composable(DialysisDestination.LoginScreen.route) {
+                selectedItems.clear()
                 LoginScreen(loginViewModel = loginViewModel) {
                     navController.navigate(DialysisDestination.MainScreen.route)
                 }
