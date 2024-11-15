@@ -3,6 +3,7 @@
     <string name="create_new_dialysis">Create new dialysis</string>
     <string name="uf_inicial">Initial UF</string>
     <string name="uf_final">Final UF</string>
+    <string name="uf_total">Total UF</string>
     <string name="observations">Notes</string>
     <string name="salvar">Save</string>
     <string name="apagar">Delete</string>

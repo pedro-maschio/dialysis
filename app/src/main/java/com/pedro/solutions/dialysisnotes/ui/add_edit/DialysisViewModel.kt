@@ -12,6 +12,7 @@ import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
 import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDAO
 import com.pedro.solutions.dialysisnotes.ui.Utils
+import com.pedro.solutions.dialysisnotes.utils.DataTestGenerator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,9 @@ class DialysisViewModel(
     val uiState: StateFlow<AddEditDialysisState> = _uiState.asStateFlow()
 
     init {
+//        viewModelScope.launch {
+//            DataTestGenerator.generateMediumDialysisList().forEach { dao.insertDialysis(it) }
+//        }
         resetState()
     }
 

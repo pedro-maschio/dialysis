@@ -1,5 +1,6 @@
 package com.pedro.solutions.dialysisnotes.ui.dialysis_list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -57,6 +58,15 @@ fun DialysisList(
 
     if (selectedItems.isEmpty()) isInSelectionMode = false
 
+    val resetSelectionMode = {
+        isInSelectionMode = false
+        selectedItems.clear()
+        onSelectedItemsChanged(selectedItems)
+    }
+    BackHandler(enabled=isInSelectionMode) {
+        resetSelectionMode()
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -64,19 +74,6 @@ fun DialysisList(
     ) {
         var prevMonth = ""
         itemsIndexed(dialysisList) { index, item ->
-            val currentMonth = Utils.getMonthNameFromInteger(
-                item.createdAt, Utils.getDefaultLocale(
-                    LocalContext.current
-                )
-            )
-            if (index == 0 || (currentMonth != prevMonth)) {
-                Month(
-                    Utils.getMonthNameFromInteger(
-                        item.createdAt, Utils.getDefaultLocale(LocalContext.current)
-                    ), Modifier.padding(10.dp, 5.dp)
-                )
-                prevMonth = currentMonth
-            }
 
             val isItemSelected = selectedItems.contains(item.id)
             DialysisItem(
@@ -111,12 +108,6 @@ fun DialysisList(
         }
     }
 }
-
-@Composable
-fun Month(monthName: String, modifier: Modifier) {
-    Text(text = monthName, modifier = modifier)
-}
-
 
 @Preview
 @Composable
