@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.pdf_generator
+package com.pedro.solutions.dialysisnotes.ui.pdf
 
 sealed class AddEditPDFEvent {
     data class OnPDFPatientChanged(val patient: String): AddEditPDFEvent()

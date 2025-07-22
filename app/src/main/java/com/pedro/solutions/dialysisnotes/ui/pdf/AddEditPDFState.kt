@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.pdf_generator
+package com.pedro.solutions.dialysisnotes.ui.pdf
 
 data class AddEditPDFState(
     val patient: String = "",

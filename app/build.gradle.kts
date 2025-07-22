@@ -70,7 +70,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.runtime:runtime-livedata")
+
     implementation("io.insert-koin:koin-android:4.0.3")
+    implementation("io.insert-koin:koin-androidx-compose:4.0.3")
 
 
     implementation("androidx.fragment:fragment-ktx:1.8.0")

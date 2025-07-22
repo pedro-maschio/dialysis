@@ -47,26 +47,27 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.pedro.solutions.dialysisnotes.R
-import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysis
-import com.pedro.solutions.dialysisnotes.ui.add_edit.AddEditDialysisEvent
-import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
-import com.pedro.solutions.dialysisnotes.ui.dialysis_list.DialysisList
+import com.pedro.solutions.dialysisnotes.ui.add.AddEditDialysis
+import com.pedro.solutions.dialysisnotes.ui.add.AddEditDialysisEvent
+import com.pedro.solutions.dialysisnotes.ui.add.DialysisViewModel
+import com.pedro.solutions.dialysisnotes.ui.dialysis.DialysisList
 import com.pedro.solutions.dialysisnotes.ui.login.LoginScreen
 import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
-import com.pedro.solutions.dialysisnotes.ui.pdf_generator.AddEditPDF
-import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFList
-import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
+import com.pedro.solutions.dialysisnotes.ui.pdf.AddEditPDF
+import com.pedro.solutions.dialysisnotes.ui.pdf.PDFList
+import com.pedro.solutions.dialysisnotes.ui.pdf.PDFViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    dialysisViewModel: DialysisViewModel,
-    pdfViewModel: PDFViewModel,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel = koinViewModel(),
+    dialysisViewModel: DialysisViewModel = koinViewModel(),
+    pdfViewModel: PDFViewModel = koinViewModel()
 ) {
     val navController = rememberNavController()
     val startDestination: String =
-        if (loginViewModel.isUserLoggedIn()) DialysisDestination.MainScreen.route else DialysisDestination.LoginScreen.route
+        if (loginViewModel.isUserLoggedIn()) DialysisDestination.MainScreen.route else DialysisDestination.MainScreen.route
 
     val bottomNavigationItems =
         listOf(DialysisDestination.MainScreen, DialysisDestination.PDFList)

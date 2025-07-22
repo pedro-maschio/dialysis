@@ -1,18 +1,12 @@
-package com.pedro.solutions.dialysisnotes.ui.add_edit
+package com.pedro.solutions.dialysisnotes.ui.add
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
 import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDAO
 import com.pedro.solutions.dialysisnotes.ui.Utils
-import com.pedro.solutions.dialysisnotes.utils.DataTestGenerator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

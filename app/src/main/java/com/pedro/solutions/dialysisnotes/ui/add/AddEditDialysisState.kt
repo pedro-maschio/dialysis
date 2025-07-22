@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.add_edit
+package com.pedro.solutions.dialysisnotes.ui.add
 
 data class AddEditDialysisState(
     val createdAt: Long = 0,

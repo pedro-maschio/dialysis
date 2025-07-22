@@ -8,18 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.pedro.solutions.dialysisnotes.navigation.MainScreen
-import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
-import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
-import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : ComponentActivity() {
-    private val dialysisViewModel: DialysisViewModel by viewModel()
-    private val pdfViewModel: PDFViewModel by viewModel()
-    private val loginViewModel: LoginViewModel by viewModel()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,7 +21,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(dialysisViewModel, pdfViewModel, loginViewModel)
+                    MainScreen()
                 }
             }
         }

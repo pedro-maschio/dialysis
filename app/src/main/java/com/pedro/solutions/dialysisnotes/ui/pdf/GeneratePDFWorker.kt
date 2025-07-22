@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.pdf_generator
+package com.pedro.solutions.dialysisnotes.ui.pdf
 
 import android.content.Context
 import android.graphics.Paint

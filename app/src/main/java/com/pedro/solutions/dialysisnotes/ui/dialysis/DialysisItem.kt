@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.dialysis_list
+package com.pedro.solutions.dialysisnotes.ui.dialysis
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable

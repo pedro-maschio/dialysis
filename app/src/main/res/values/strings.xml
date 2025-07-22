@@ -8,7 +8,7 @@
     <string name="salvar">Save</string>
     <string name="apagar">Delete</string>
     <string name="criado_as">Created at %s</string>
-    <string name="atualizado">Updated at %s</string>
+    <string name="atualizado">Last updated at %s</string>
     <string name="generated_pdfs">PDFs</string>
     <string name="add_edit_pdf">Create PDF</string>
     <string name="patient_name">Patient name</string>

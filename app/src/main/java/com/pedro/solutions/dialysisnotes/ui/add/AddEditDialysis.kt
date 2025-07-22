@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.add_edit
+package com.pedro.solutions.dialysisnotes.ui.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.add_edit
+package com.pedro.solutions.dialysisnotes.ui.add
 
 sealed class AddEditDialysisEvent {
     data class OnDialysisInitialUFChange(val initialUF: String) : AddEditDialysisEvent()

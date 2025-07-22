@@ -8,5 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="cardSelectedColor">#5395d4</color>
-    <color name="cardUnselectedColor">#5e5f61</color>
+    <color name="cardUnselectedColor">#b6d7fc</color>
 </resources>

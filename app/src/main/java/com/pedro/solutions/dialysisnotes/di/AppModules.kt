@@ -4,9 +4,9 @@ import androidx.room.Room
 import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDatabase
 import com.pedro.solutions.dialysisnotes.data.users.UserDatabase
-import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
+import com.pedro.solutions.dialysisnotes.ui.add.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
-import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
+import com.pedro.solutions.dialysisnotes.ui.pdf.PDFViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
