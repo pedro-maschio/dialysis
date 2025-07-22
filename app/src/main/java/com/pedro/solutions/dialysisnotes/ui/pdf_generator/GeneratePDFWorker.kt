@@ -9,10 +9,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.data.dialysis.Dialysis
+import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDAO
 import com.pedro.solutions.dialysisnotes.ui.Utils
+import org.koin.java.KoinJavaComponent.inject
 import kotlin.math.min
 
 class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -26,7 +27,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             val endInterval = inputData.getLong("end_interval", 0)
             if (startInterval == 0L || endInterval == 0L) return Result.failure()
 
-            val dialysisDao = (applicationContext as DialysisApplication).dialysisDatabase.dialysisDao()
+            val dialysisDao: DialysisDAO by inject(DialysisDAO::class.java)
 
             val allDialysis = dialysisDao.getDialysisBetweenInterval(startInterval, endInterval)
             Log.d(TAG, "allDialysis=${allDialysis.size} startInterval=$startInterval endInterval=$endInterval")

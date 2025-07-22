@@ -1,12 +1,8 @@
 package com.pedro.solutions.dialysisnotes.ui.login
 
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.pedro.solutions.dialysisnotes.DialysisApplication
 import com.pedro.solutions.dialysisnotes.data.users.User
 import com.pedro.solutions.dialysisnotes.data.users.UserDao
@@ -21,7 +17,6 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     val dao: UserDao,
     private val application: DialysisApplication,
-    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginState())
 
@@ -104,25 +99,6 @@ class LoginViewModel(
 
             is LoginEvent.OnLogin -> {
                 tryToLogin()
-            }
-        }
-    }
-
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>, extras: CreationExtras
-            ): T {
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
-                return LoginViewModel(
-                    (application as DialysisApplication).userDatabase.userDao(),
-                    application,
-                    savedStateHandle
-                ) as T
             }
         }
     }

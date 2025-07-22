@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DialysisViewModel(
-    private val dao: DialysisDAO, private val savedStateHandle: SavedStateHandle
+    private val dao: DialysisDAO
 ) : ViewModel() {
     val dialysisList: LiveData<List<Dialysis>> = dao.getAllDialysisNewestFirst().asLiveData()
 
@@ -128,23 +128,6 @@ class DialysisViewModel(
         id?.let {
             viewModelScope.launch {
                 dao.deleteDialysis(id)
-            }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>, extras: CreationExtras
-            ): T {
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
-                return DialysisViewModel(
-                    (application as DialysisApplication).dialysisDatabase.dialysisDao(),
-                    savedStateHandle
-                ) as T
             }
         }
     }

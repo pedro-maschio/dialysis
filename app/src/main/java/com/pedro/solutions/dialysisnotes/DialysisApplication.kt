@@ -1,10 +1,17 @@
 package com.pedro.solutions.dialysisnotes
 
 import android.app.Application
-import com.pedro.solutions.dialysisnotes.data.dialysis.DialysisDatabase
-import com.pedro.solutions.dialysisnotes.data.users.UserDatabase
+import com.pedro.solutions.dialysisnotes.di.AppModules
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class DialysisApplication: Application() {
-    val dialysisDatabase: DialysisDatabase by lazy { DialysisDatabase.getDatabase(this) }
-    val userDatabase: UserDatabase by lazy { UserDatabase.getDatabase(this) }
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidContext(this@DialysisApplication)
+            modules(AppModules)
+        }
+    }
 }

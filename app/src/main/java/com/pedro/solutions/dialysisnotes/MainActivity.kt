@@ -3,7 +3,6 @@ package com.pedro.solutions.dialysisnotes
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,19 +12,13 @@ import com.pedro.solutions.dialysisnotes.ui.add_edit.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
 import com.pedro.solutions.dialysisnotes.ui.pdf_generator.PDFViewModel
 import com.pedro.solutions.dialysisnotes.ui.theme.DialysisNotesTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : ComponentActivity() {
-    private val dialysisViewModel: DialysisViewModel by viewModels {
-        DialysisViewModel.Factory
-    }
-    private val pdfViewModel: PDFViewModel by viewModels {
-        PDFViewModel.Factory
-    }
-
-    private val loginViewModel: LoginViewModel by viewModels {
-        LoginViewModel.Factory
-    }
+    private val dialysisViewModel: DialysisViewModel by viewModel()
+    private val pdfViewModel: PDFViewModel by viewModel()
+    private val loginViewModel: LoginViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

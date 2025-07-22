@@ -30,8 +30,7 @@ import kotlin.math.min
 class PDFViewModel(
     dialysisDao: DialysisDAO,
     private val pdfDao: pdfDao,
-    private val application: DialysisApplication,
-    private val savedStateHandle: SavedStateHandle
+    private val application: DialysisApplication
 ) : ViewModel() {
     private val TAG = this.javaClass.simpleName
 
@@ -135,25 +134,6 @@ class PDFViewModel(
                 _addPDFState.update { currentState ->
                     currentState.copy(fileDirectory = event.directory)
                 }
-            }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>, extras: CreationExtras
-            ): T {
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
-                return PDFViewModel(
-                    (application as DialysisApplication).dialysisDatabase.dialysisDao(),
-                    application.dialysisDatabase.pdfDao(),
-                    application,
-                    savedStateHandle
-                ) as T
             }
         }
     }
