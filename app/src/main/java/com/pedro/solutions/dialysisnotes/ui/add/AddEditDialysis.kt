@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
+import com.pedro.solutions.dialysisnotes.ui.dialysis.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

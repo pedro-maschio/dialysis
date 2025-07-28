@@ -59,9 +59,9 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
         var dialysisIdx = 0
         var yPos = 200f
         val document = PdfDocument()
-
+        var pageNumber = 1
         while (numberOfPages > 0) {
-            val pageInfo = PageInfo.Builder(2480, 3508, 1).create()
+            val pageInfo = PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, pageNumber++).create()
 
             val page = document.startPage(pageInfo)
             val canvas = page.canvas
@@ -106,7 +106,7 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
             Utils.getDefaultLocale(applicationContext)
         )
 
-        return "$createdAt ${applicationContext.getString(R.string.uf_inicial)} ${dialysis.initialUf}${
+        return "$createdAt ${applicationContext.getString(R.string.uf_inicial)} ${dialysis.initialUf} ${
             applicationContext.getString(
                 R.string.uf_final
             )
@@ -140,5 +140,10 @@ class GeneratePDFWorker(context: Context, params: WorkerParameters) : Worker(con
         text.textSize = 30f
 
         return text
+    }
+
+    private companion object {
+        const val PAGE_WIDTH = 2480
+        const val PAGE_HEIGHT = 3508
     }
 }

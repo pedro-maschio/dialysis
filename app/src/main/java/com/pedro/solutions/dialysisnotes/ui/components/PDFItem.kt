@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.pdf
+package com.pedro.solutions.dialysisnotes.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

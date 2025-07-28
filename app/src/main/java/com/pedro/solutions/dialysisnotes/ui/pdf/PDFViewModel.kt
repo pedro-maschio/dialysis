@@ -1,6 +1,7 @@
 package com.pedro.solutions.dialysisnotes.ui.pdf
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -56,10 +57,10 @@ class PDFViewModel(
                             AddEditPDFState(startInterval = 0,
                                 endInterval = 0,
                                 isDateSelectableStartInterval = {
-                                    (it >= min(oldestDialysis[0], System.currentTimeMillis())) && (it <= max(newestDialysis[0], System.currentTimeMillis()))
+                                    true
                                 },
                                 isDateSelectableEndInterval = {
-                                    (it >= min(oldestDialysis[0], System.currentTimeMillis())) && (it <= max(newestDialysis[0], System.currentTimeMillis()))
+                                    true
                                 })
                         }
                     }

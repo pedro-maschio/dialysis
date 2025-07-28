@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -49,7 +50,7 @@ import androidx.navigation.navArgument
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.ui.add.AddEditDialysis
 import com.pedro.solutions.dialysisnotes.ui.add.AddEditDialysisEvent
-import com.pedro.solutions.dialysisnotes.ui.add.DialysisViewModel
+import com.pedro.solutions.dialysisnotes.ui.dialysis.DialysisViewModel
 import com.pedro.solutions.dialysisnotes.ui.dialysis.DialysisList
 import com.pedro.solutions.dialysisnotes.ui.login.LoginScreen
 import com.pedro.solutions.dialysisnotes.ui.login.LoginViewModel
@@ -214,7 +215,13 @@ fun AppBarDelete(numSelectedItems: Int, onDeleteCLicked: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "$numSelectedItems items selected")
+        Text(
+            text = pluralStringResource(
+                R.plurals.selected_items,
+                numSelectedItems,
+                numSelectedItems
+            )
+        )
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = "",

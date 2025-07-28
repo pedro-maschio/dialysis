@@ -1,4 +1,4 @@
-package com.pedro.solutions.dialysisnotes.ui.pdf
+package com.pedro.solutions.dialysisnotes.ui.components
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -19,7 +19,7 @@ fun CustomDatePickerDialog(
             return isDateSelectable(utcTimeMillis)
         }
     })
-    val selectedDate = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
+    val selectedDate = datePickerState.selectedDateMillis ?: 0
 
     DatePickerDialog(onDismissRequest = { onDismiss() }, confirmButton = {
         Button(onClick = {

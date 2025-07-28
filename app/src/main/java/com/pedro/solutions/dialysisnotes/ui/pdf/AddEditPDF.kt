@@ -2,6 +2,7 @@ package com.pedro.solutions.dialysisnotes.ui.pdf
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.navigation.DialysisDestination
 import com.pedro.solutions.dialysisnotes.ui.Utils
+import com.pedro.solutions.dialysisnotes.ui.components.CustomDatePickerDialog
 import com.pedro.solutions.dialysisnotes.ui.theme.CommonScaffold
 
 @Composable

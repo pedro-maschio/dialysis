@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.pedro.solutions.dialysisnotes.R
 import com.pedro.solutions.dialysisnotes.data.pdf.PDF
 import com.pedro.solutions.dialysisnotes.ui.components.EmptyDialysisListIndicator
+import com.pedro.solutions.dialysisnotes.ui.components.PDFItem
 
 
 @Composable
